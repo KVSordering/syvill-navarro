@@ -9,20 +9,18 @@ import Services from '../components/Services'
 import SelectedWork from '../components/SelectedWork'
 import Philosophy from '../components/Philosophy'
 import Contact from '../components/Contact'
+import ScrollProgress from '../components/ScrollProgress'
+import ParallaxBackground from '../components/ParallaxBackground'
 
 const sections = [About, TechStack, Services, SelectedWork, Philosophy, Contact]
 
 const sectionVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i) => ({
+  hidden: { opacity: 0, y: 48 },
+  visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.8,
-      delay: 0.3 + i * 0.12,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  }),
+    transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
+  },
 }
 
 export default function Home() {
@@ -34,26 +32,31 @@ export default function Home() {
 
       <AnimatePresence>
         {revealed && (
-          <motion.main
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <Navbar visible={revealed} />
+          <>
+            <ParallaxBackground />
+            <motion.main
+              className="relative z-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <ScrollProgress />
+              <Navbar visible={revealed} />
             <Hero revealed={revealed} />
 
-            {sections.map((Section, i) => (
+            {sections.map((Section) => (
               <motion.div
                 key={Section.name}
-                custom={i}
                 initial="hidden"
-                animate="visible"
+                whileInView="visible"
+                viewport={{ once: true, margin: '-80px' }}
                 variants={sectionVariants}
               >
                 <Section />
               </motion.div>
             ))}
-          </motion.main>
+            </motion.main>
+          </>
         )}
       </AnimatePresence>
     </div>

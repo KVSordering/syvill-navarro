@@ -32,15 +32,12 @@ export default function Navbar({ visible }) {
       }`}
     >
       <nav className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-3 group">
+        <a href="#" className="group" aria-label="Syvill Navarro">
           <img
             src={logo}
-            alt=""
-            className="w-8 h-8 opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+            alt="Syvill Navarro"
+            className="w-11 h-11 sm:w-12 sm:h-12 opacity-80 group-hover:opacity-100 transition-opacity duration-300"
           />
-          <span className="text-sm font-medium tracking-widest uppercase text-white/60 group-hover:text-white/90 transition-colors hidden sm:block">
-            SN
-          </span>
         </a>
 
         <ul className="hidden md:flex items-center gap-8">
