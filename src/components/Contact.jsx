@@ -1,11 +1,16 @@
 import { motion } from 'framer-motion'
-import MagneticButton from './MagneticButton'
 
-const links = [
-  { label: 'Email', href: 'mailto:hello@carlsyvill.com', variant: 'primary' },
-  { label: 'GitHub', href: 'https://github.com/carlsyvill', variant: 'outline' },
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/carlsyvill', variant: 'outline' },
-  { label: 'Schedule a Call', href: 'mailto:hello@carlsyvill.com?subject=Schedule%20a%20Call', variant: 'primary' },
+const contactDetails = [
+  {
+    label: 'Email',
+    value: 'carlsyvillnavarro@gmail.com',
+    href: 'mailto:carlsyvillnavarro@gmail.com',
+  },
+  {
+    label: 'Phone',
+    value: '780 975 3056',
+    href: 'tel:+17809753056',
+  },
 ]
 
 export default function Contact() {
@@ -29,24 +34,26 @@ export default function Contact() {
             dashboard, or custom business solution, let&apos;s talk.
           </p>
 
-          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4">
-            {links.map((link, i) => (
-              <motion.div
-                key={link.label}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+            {contactDetails.map((detail, i) => (
+              <motion.a
+                key={detail.label}
+                href={detail.href}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -4, transition: { duration: 0.3 } }}
+                className="group relative p-6 sm:p-8 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/[0.04] transition-all duration-500 text-center"
               >
-                <MagneticButton
-                  href={link.href}
-                  variant={link.variant}
-                  target={link.href.startsWith('http') ? '_blank' : undefined}
-                  rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                >
-                  {link.label}
-                </MagneticButton>
-              </motion.div>
+                <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <p className="text-xs tracking-[0.3em] uppercase text-white/30 mb-3">
+                  {detail.label}
+                </p>
+                <p className="text-base sm:text-lg font-light text-white/60 group-hover:text-white/90 transition-colors duration-300">
+                  {detail.value}
+                </p>
+              </motion.a>
             ))}
           </div>
         </motion.div>
