@@ -1,0 +1,79 @@
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.15));
+  }
+  50% {
+    filter: drop-shadow(0 0 28px rgba(255, 255, 255, 0.35));
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes light-sweep {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(150%) skewX(-20deg);
+    opacity: 1;
+  }
+  60% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(150%) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+.logo-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.logo-glow {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.logo-sweep::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.12) 50%,
+    transparent 60%
+  );
+  animation: light-sweep 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.ripple-ring {
+  animation: ripple 3s ease-out infinite;
+}
+
+.ripple-ring-delayed {
+  animation: ripple 3s ease-out 1.5s infinite;
+}
