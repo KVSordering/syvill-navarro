@@ -36,7 +36,7 @@ export default function Navbar({ visible }) {
           <img
             src={logo}
             alt="Syvill Navarro"
-            className="w-11 h-11 sm:w-12 sm:h-12 opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+            className="w-22 h-22 sm:w-24 sm:h-24 opacity-80 group-hover:opacity-100 transition-opacity duration-300"
           />
         </a>
 
