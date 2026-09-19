@@ -1,55 +1,45 @@
 import { motion } from 'framer-motion'
-
-const container = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
-}
-
-const item = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-  },
-}
+import { viewport, useFadeUp, useStagger } from '../lib/motion'
 
 const paragraphs = [
-  'I specialize in building practical software solutions that solve real business problems.',
-  'My focus is creating systems that reduce manual work, improve workflows, and help companies scale.',
-  'From marketing websites to custom business platforms, I build technology that people actually use.',
-  'I enjoy transforming spreadsheets, disconnected processes, and manual workflows into centralized systems that provide visibility, accountability, and automation.',
+  'I build practical software that solves real business problems.',
+  'My focus is systems that cut busywork, clean up workflows, and help companies grow without drowning in manual tasks.',
+  'That can mean a marketing website, a custom internal platform, or both — software people actually use day to day.',
+  'I like turning spreadsheets, scattered processes, and “ask that one person” workflows into one clear system with visibility, ownership, and automation.',
 ]
 
 export default function About() {
+  const fadeUp = useFadeUp()
+  const stagger = useStagger()
+
   return (
-    <section id="about" className="relative py-24 sm:py-32 px-6">
+    <section id="about" className="relative py-24 sm:py-32 px-5 sm:px-6">
       <div className="max-w-3xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.7 }}
-          className="mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+          variants={fadeUp}
+          className="mb-12 sm:mb-16 text-center"
         >
-          <p className="text-xs tracking-[0.3em] uppercase text-white/30 mb-4">About Me</p>
-          <h2 className="text-3xl sm:text-4xl font-light text-white tracking-tight">
+          <p className="text-xs tracking-[0.28em] uppercase text-accent mb-4">About</p>
+          <h2 className="text-3xl sm:text-4xl font-semibold text-ink tracking-tight">
             Building systems that matter
           </h2>
         </motion.div>
 
         <motion.div
-          variants={container}
+          variants={stagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
-          className="space-y-8"
+          viewport={viewport}
+          className="space-y-7"
         >
-          {paragraphs.map((text, i) => (
+          {paragraphs.map((text) => (
             <motion.p
-              key={i}
-              variants={item}
-              className="text-base sm:text-lg text-white/45 leading-relaxed font-light"
+              key={text}
+              variants={fadeUp}
+              className="text-base sm:text-lg text-muted leading-relaxed"
             >
               {text}
             </motion.p>

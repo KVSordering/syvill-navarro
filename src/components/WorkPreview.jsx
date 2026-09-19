@@ -433,7 +433,7 @@ export function CheckoutPreview({ inView }) {
             { name: 'Standard', price: '$499', perks: '1 system' },
             { name: 'Premium', price: '$849', perks: '2 systems', selected: true },
             { name: 'Full', price: '$1,240', perks: 'Whole home' },
-          ].map((pkg, i) => (
+          ].map((pkg) => (
             <div
               key={pkg.name}
               className={`rounded-md border p-1.5 text-center ${

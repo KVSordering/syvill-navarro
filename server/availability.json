@@ -1,0 +1,14 @@
+{
+  "timezone": "America/Edmonton",
+  "durationMinutes": 30,
+  "bufferMinutes": 0,
+  "minNoticeMinutes": 120,
+  "daysAhead": 28,
+  "hours": {
+    "monday": [["09:00", "12:00"], ["13:00", "17:00"]],
+    "tuesday": [["09:00", "12:00"], ["13:00", "17:00"]],
+    "wednesday": [["09:00", "12:00"], ["13:00", "17:00"]],
+    "thursday": [["09:00", "12:00"], ["13:00", "17:00"]],
+    "friday": [["09:00", "12:00"], ["13:00", "16:00"]]
+  }
+}

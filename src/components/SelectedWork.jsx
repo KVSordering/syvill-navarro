@@ -1,230 +1,191 @@
 import { useRef } from 'react'
-import { motion, useScroll, useTransform, useInView } from 'framer-motion'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
 import WorkPreview from './WorkPreview'
+import DealerPortalMini from './DealerPortalMini'
+import TeamPortalMini from './TeamPortalMini'
+import OpsDashboardMini from './OpsDashboardMini'
+import { viewport, useFadeUp } from '../lib/motion'
 
 const projects = [
   {
-    title: 'Field Operations Command Center',
-    category: 'Internal Platform',
-    timeline: '10 weeks',
-    scope: 'Ops team · 3 field crews · Office staff',
+    title: 'Dealer ordering portal',
+    timeline: 'Old site / new portal',
+    scope: 'Almost 10k SKUs · Contract pricing · Cart · ERP-connected orders',
     problem:
-      'Morning dispatch relied on four Google Sheets updated by hand. Crew assignments, job status, and overdue invoices lived in different files — causing missed follow-ups and duplicate data entry.',
-    solution:
-      'Built a single operations hub with live job boards, crew assignment views, and invoice status flags synced from one database. Office staff update once; field supervisors see changes immediately.',
-    description:
-      'Central hub for a 12-person home services company managing 140+ weekly jobs across 3 field crews.',
-    outcomes: ['140+ jobs/week tracked', '6 hrs/week admin saved', '3 crews unified'],
-    tech: ['React', 'Node.js', 'PostgreSQL', 'Railway'],
-    preview: 'platform',
+      'The public website could search products, but it could not show what a dealer actually pays or take the order. Pricing and checkout lived on the phone, in email, and in the ERP.',
+    built:
+      'A signed-in B2B layer around the ERP they already run: almost 10k SKUs with contract pricing on every item, cart and checkout, order history, and a file/SFTP bridge so orders and confirmations move without re-typing.',
+    result:
+      'Month one added $500k in orders versus the old website. Every month since, it has beaten the old monthly average by $300–400k.',
+    metrics: [
+      { value: '~10k', label: 'SKUs with live dealer/contract pricing' },
+      { value: '$500k', label: 'more in month one vs the old website' },
+      { value: '$300–400k', label: 'above the old monthly average, every month since' },
+    ],
+    compare: [
+      { old: 'Keyword catalog, no live dealer price', next: 'Contract price on every SKU' },
+      { old: 'No cart — staff placed the order', next: 'Quick add, checkout, order history' },
+      { old: 'Website and ERP were separate worlds', next: 'Orders and status sync through the ERP' },
+    ],
+    preview: 'dealer',
   },
   {
-    title: 'Service Business Lead Site',
-    category: 'Marketing Website',
-    timeline: '6 weeks',
-    scope: 'Public site · Quote forms · Email alerts',
+    title: 'Invite-only team portal',
+    timeline: 'Invite-only portal',
+    scope: 'Directory · Map · Training · Events · Role-based access',
     problem:
-      'An outdated single-page site generated few leads. Quote requests came by phone only, and the team had no visibility into which services visitors cared about most.',
-    solution:
-      'Launched a mobile-first site with dedicated service pages, a coverage map, and quote forms that trigger instant email alerts. Each form submission logs source page and service type for follow-up.',
-    description:
-      'Regional HVAC and plumbing company site with service pages, coverage map, and automated lead notifications.',
-    outcomes: ['23% more form leads', '8 service pages', '2-min alert delivery'],
-    tech: ['Next.js', 'Tailwind CSS', 'Resend', 'Vercel'],
-    preview: 'website',
+      'The Wix members site could not hold training, lender files, events, and a team map in one signed-in place. Everyone got the same door, or the files lived in email.',
+    built:
+      'An invite-only portal: agents, assistants, lenders, and admins sign in and only see what their role allows. Team directory, live map pins, training and File Friday, events and perks, plus private files behind the login.',
+    result:
+      'One place for the team instead of a members page plus scattered drives. Lenders get a narrow door; agents get tools; admins approve people without rebuilding access from scratch.',
+    metrics: [
+      { value: '4 roles', label: 'Agent, assistant, lender, and admin — different doors' },
+      { value: 'One login', label: 'Directory, map, training, events, and private files' },
+      { value: 'Invite-only', label: 'Replaces the Wix members site' },
+    ],
+    compare: [
+      { old: 'Wix members site', next: 'Signed-in portal with real permissions' },
+      { old: 'Lender files in inboxes', next: 'Directory + private downloads' },
+      { old: 'No team map', next: 'Pins from member addresses' },
+    ],
+    preview: 'team',
   },
   {
-    title: 'Customer Records Admin Portal',
-    category: 'Admin Dashboard',
-    timeline: '14 weeks',
-    scope: '2,400+ records · 5 years of history',
+    title: 'Operations dashboard',
+    timeline: 'Accounting · Operations',
+    scope: 'Invoices · Exceptions · Filters · Nightly sync',
     problem:
-      'Customer data was scattered across spreadsheets, paper files, and an old CRM export. Staff spent 20+ minutes locating a single customer\'s full service history before every callback.',
-    solution:
-      'Migrated five years of records into a searchable admin portal with filters, service timelines, technician notes, and recurring billing flags. Role-based access limits sensitive fields by user type.',
-    description:
-      'Back-office system for 2,400+ customer profiles with full history, notes, and billing flags.',
-    outcomes: ['2,400+ records migrated', '5 yrs history preserved', 'Role-based access'],
-    tech: ['React', 'FastAPI', 'MySQL', 'Prisma'],
-    preview: 'admin',
-  },
-  {
-    title: 'Invoice Reconciliation Pipeline',
-    category: 'Workflow Automation',
-    timeline: '8 weeks',
-    scope: 'Accounting · Operations · Nightly sync',
-    problem:
-      'Completed jobs were re-entered manually into accounting spreadsheets every week. Labor rates, material markups, and invoice totals were calculated by hand — 12+ hours of error-prone work.',
-    solution:
-      'Automated nightly pipeline pulls completed job data, applies rate tables and markup rules, and generates draft invoices for review. Accounting approves instead of rebuilding from scratch.',
-    description:
-      'Nightly automation from field completion to draft invoice — eliminating duplicate entry between ops and bookkeeping.',
-    outcomes: ['12 hrs/week → under 1 hr', 'Nightly auto-sync', 'Zero duplicate entry'],
-    tech: ['Python', 'REST APIs', 'PostgreSQL', 'Cron'],
-    preview: 'automation',
-  },
-  {
-    title: 'Quote Builder & Deposit Checkout',
-    category: 'E-Commerce',
-    timeline: '7 weeks',
-    scope: 'Sales team · Online quotes · Stripe deposits',
-    problem:
-      'Quotes were built in email threads with inconsistent pricing. Collecting deposits required separate payment links, and accepted quotes had to be manually re-entered into scheduling.',
-    solution:
-      'Multi-step quote builder with tiered packages, property-size modifiers, and integrated Stripe deposits. Accepted quotes auto-create scheduling entries and send branded confirmation emails.',
-    description:
-      'Guided quote flow with tiered packages, dynamic pricing, and deposit collection tied to the job queue.',
-    outcomes: ['$18k+/mo processed', '68% deposit completion', 'Auto job queue'],
-    tech: ['React', 'Stripe', 'Node.js', 'Webhooks'],
-    preview: 'checkout',
+      'Accounting chased mismatches across exports and email. Nobody could see the live picture — how much matched, what was still open, who owned the gap.',
+    built:
+      'A dashboard that pulls invoices and payments into one view: match rate, dollar gaps, aging, and filters the team actually uses. Nightly sync, exceptions in one queue.',
+    result:
+      'Less manual chasing. Exceptions have an owner. The numbers for the week sit in one place instead of three spreadsheets.',
+    metrics: [
+      { value: 'One view', label: 'Matched, gaps, and review in the same screen' },
+      { value: 'Filters', label: 'By period, team, vendor, and status' },
+      { value: 'Nightly', label: 'Sync so the queue is current in the morning' },
+    ],
+    preview: 'dash',
   },
 ]
 
 function ProjectCard({ project, index }) {
-  const cardRef = useRef(null)
   const previewRef = useRef(null)
-  const isInView = useInView(cardRef, { once: true, margin: '-80px' })
   const previewInView = useInView(previewRef, { once: true, margin: '-40px' })
-
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ['start end', 'end start'],
-  })
-
-  const previewY = useTransform(scrollYProgress, [0, 1], [24, -24])
-  const previewScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.96, 1, 0.98])
-  const glowOpacity = useTransform(scrollYProgress, [0.2, 0.5, 0.8], [0, 0.6, 0])
-
-  const isEven = index % 2 === 0
+  const fadeUp = useFadeUp()
+  const reduce = useReducedMotion()
 
   return (
     <motion.article
-      ref={cardRef}
-      initial={{ opacity: 0, x: isEven ? -40 : 40, y: 30 }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{
-        duration: 0.85,
-        delay: index * 0.08,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="group relative rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden hover:border-white/10 transition-colors duration-500"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewport}
+      variants={fadeUp}
+      transition={{ delay: index * 0.06 }}
+      whileHover={
+        reduce || project.preview === 'dealer' || project.preview === 'team' || project.preview === 'dash'
+          ? undefined
+          : { y: -4, transition: { duration: 0.25 } }
+      }
+      className="group rounded-2xl border border-line bg-surface overflow-hidden shadow-card min-w-0"
     >
-      <motion.div
-        className="absolute -inset-px rounded-2xl bg-[radial-gradient(ellipse_at_50%_0%,rgba(255,255,255,0.08)_0%,transparent_65%)] pointer-events-none"
-        style={{ opacity: glowOpacity }}
-      />
-
-      <div ref={previewRef} className="relative aspect-[16/10] overflow-hidden border-b border-white/5">
-        <motion.div
-          style={{ y: previewY, scale: previewScale }}
-          className="absolute inset-0"
-        >
+      <div
+        ref={previewRef}
+        className={`relative overflow-hidden border-b border-line ${
+          project.preview === 'dealer' || project.preview === 'team' || project.preview === 'dash' ? '' : 'aspect-[16/10]'
+        }`}
+      >
+        {project.preview === 'dealer' ? (
+          <DealerPortalMini />
+        ) : project.preview === 'team' ? (
+          <TeamPortalMini />
+        ) : project.preview === 'dash' ? (
+          <OpsDashboardMini />
+        ) : (
           <WorkPreview type={project.preview} inView={previewInView} />
-        </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50 pointer-events-none" />
-        <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full border border-white/10 bg-black/60 backdrop-blur-sm">
-          <span className="text-[10px] tracking-wider uppercase text-white/40">{project.timeline}</span>
-        </div>
+        )}
+        {project.preview !== 'dealer' && project.preview !== 'team' && project.preview !== 'dash' && (
+          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full border border-white/10 bg-ink/70 backdrop-blur-sm">
+            <span className="text-[10px] tracking-wider uppercase text-white/80">{project.timeline}</span>
+          </div>
+        )}
       </div>
 
       <div className="p-6 sm:p-8">
-        <div className="flex flex-wrap items-center gap-3 mb-3">
-          <span className="text-xs tracking-[0.2em] uppercase text-white/35">{project.category}</span>
-          <span className="text-white/15">·</span>
-          <span className="text-xs text-white/30 font-light">{project.scope}</span>
-        </div>
+        <p className="text-xs text-muted mb-2">{project.scope}</p>
+        <h3 className="text-xl sm:text-2xl font-semibold text-ink mb-6">{project.title}</h3>
 
-        <h3 className="text-lg font-medium text-white/90 mb-4 group-hover:text-white transition-colors">
-          {project.title}
-        </h3>
+        {project.metrics && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+            {project.metrics.map((metric) => (
+              <div
+                key={metric.label}
+                className="rounded-2xl border border-line bg-page px-4 py-3"
+              >
+                <p className="text-2xl font-semibold tracking-tight text-ink">{metric.value}</p>
+                <p className="text-xs text-muted mt-1 leading-snug">{metric.label}</p>
+              </div>
+            ))}
+          </div>
+        )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.15, duration: 0.6 }}
-          >
-            <p className="text-[10px] tracking-[0.2em] uppercase text-white/25 mb-2">Challenge</p>
-            <p className="text-sm text-white/40 leading-relaxed font-light">{project.problem}</p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.25, duration: 0.6 }}
-          >
-            <p className="text-[10px] tracking-[0.2em] uppercase text-white/25 mb-2">Solution</p>
-            <p className="text-sm text-white/40 leading-relaxed font-light">{project.solution}</p>
-          </motion.div>
-        </div>
-
-        <p className="text-sm text-white/35 leading-relaxed font-light mb-4 border-l border-white/10 pl-4">
-          {project.description}
-        </p>
-
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.outcomes.map((outcome, i) => (
-            <motion.span
-              key={outcome}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ delay: 0.3 + i * 0.06, duration: 0.4 }}
-              className="text-xs text-white/50 px-2.5 py-1 rounded-full border border-white/10 bg-white/[0.03]"
-            >
-              {outcome}
-            </motion.span>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {project.tech.map((t) => (
-            <span
-              key={t}
-              className="text-xs text-white/35 px-2.5 py-1 rounded-full border border-white/5"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
+        <dl className="space-y-4">
+          <div>
+            <dt className="text-[10px] tracking-[0.2em] uppercase text-accent mb-1.5">Problem</dt>
+            <dd className="text-sm text-muted leading-relaxed">{project.problem}</dd>
+          </div>
+          <div>
+            <dt className="text-[10px] tracking-[0.2em] uppercase text-accent mb-1.5">What we built</dt>
+            <dd className="text-sm text-muted leading-relaxed">{project.built}</dd>
+          </div>
+          <div>
+            <dt className="text-[10px] tracking-[0.2em] uppercase text-accent mb-1.5">Result</dt>
+            <dd className="text-sm text-ink leading-relaxed">{project.result}</dd>
+          </div>
+        </dl>
+        {project.compare && (
+          <ul className="mt-6 space-y-3 border-t border-line pt-5">
+            {project.compare.map((row) => (
+              <li
+                key={row.old}
+                className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-1 sm:gap-3 text-sm"
+              >
+                <span className="text-muted">{row.old}</span>
+                <span className="hidden sm:flex items-center text-accent" aria-hidden="true">
+                  →
+                </span>
+                <span className="text-ink">{row.next}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </motion.article>
   )
 }
 
 export default function SelectedWork() {
-  const sectionRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  })
-  const lineScale = useTransform(scrollYProgress, [0, 0.4], [0, 1])
+  const fadeUp = useFadeUp()
 
   return (
-    <section id="work" ref={sectionRef} className="relative py-24 sm:py-32 px-6 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(255,255,255,0.02)_0%,transparent_70%)] pointer-events-none" />
-
-      <div className="max-w-6xl mx-auto relative">
+    <section id="work" className="relative py-24 sm:py-32 px-5 sm:px-6">
+      <div className="max-w-6xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.7 }}
-          className="mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+          variants={fadeUp}
+          className="mb-12 sm:mb-16 text-center"
         >
-          <p className="text-xs tracking-[0.3em] uppercase text-white/30 mb-4">Selected Work</p>
-          <h2 className="text-3xl sm:text-4xl font-light text-white tracking-tight">
-            Capabilities in practice
+          <p className="text-xs tracking-[0.28em] uppercase text-accent mb-4">Selected work</p>
+          <h2 className="text-3xl sm:text-4xl font-semibold text-ink tracking-tight">
+            Real problems, thinner systems
           </h2>
-          <p className="text-white/35 mt-4 text-sm font-light max-w-lg">
-            Representative project scenarios — names and identifying details omitted.
-          </p>
-          <motion.div
-            className="mt-8 h-px bg-white/10 origin-left max-w-xs"
-            style={{ scaleX: lineScale }}
-          />
+          <p className="mt-4 text-base sm:text-lg text-muted">Try them — they work.</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-8">
+        <div className="grid grid-cols-1 gap-6">
           {projects.map((project, i) => (
             <ProjectCard key={project.title} project={project} index={i} />
           ))}
